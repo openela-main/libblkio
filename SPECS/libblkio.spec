@@ -1,10 +1,10 @@
-Version:       1.3.0
+Version:       1.5.0
 Summary:       Block device I/O library
 Name:          libblkio
 Release:       1%{?dist}
 URL:           https://gitlab.com/libblkio/libblkio
 Source0:       %{url}/-/archive/v%{version}/libblkio-v%{version}.tar.bz2
-Source1:       libblkio-vendor-v%{version}.tar.bz2
+Source1:       libblkio-v%{version}-vendor.tar.bz2
 License:       (Apache-2.0 OR MIT) AND (Apache-2.0 OR BSD-3-Clause) AND BSD-3-Clause
 
 # Basic build requirements.
@@ -37,6 +37,14 @@ This package contains development tools for %{name}.
 %autosetup -n libblkio-v%{version} -p1 -b 1
 sed -e 's/--locked/--offline/' -i src/cargo-build.sh
 
+mkdir -p .cargo
+cat > .cargo/config.toml <<EOL
+[source.crates-io]
+replace-with = "vendored-sources"
+[source.vendored-sources]
+directory = "vendor"
+EOL
+
 
 %build
 %{meson}
@@ -63,6 +71,9 @@ sed -e 's/--locked/--offline/' -i src/cargo-build.sh
 
 
 %changelog
+* Wed Aug 7 2024 Stefan Hajnoczi <stefanha@redhat.com> - 1.5.0-1
+- Update to 1.5.0
+
 * Thu May 11 2023 Stefan Hajnoczi <stefanha@redhat.com> - 1.3.0-1
 - Update to 1.3.0, which simplifies the license expression due to crate
   dependency changes.
